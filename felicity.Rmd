@@ -1,0 +1,269 @@
+---
+title: "Felicity Thursdays"
+output: 
+  html_document:
+    css: "./assets/style.css"  
+---
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#characters">Characters</a>
+    <a href="#hair">Hair Chronicles</a>
+    <a href="#trivia">Trivia</a>
+</nav>
+
+```{r message=F, echo=F, warning=F}
+library(tidyverse)
+library(ggplot2)
+library(openxlsx)
+library(ggthemes)
+library(readxl)
+library(plotly)
+
+# Load dataset 
+
+felicity <- read_xlsx("./data/felicity.xlsx")
+```
+
+<!-- Home Section --> 
+<div id="home"> 
+  <h2>Home Page</h2> 
+  <p>Welcome to Felicity Thursday! From September to April, individuals watched a minimum of three episodes each week. Felicity Thursday's main research question asks: How have viewer opinions on Felicity changed since the late 90s/early 2000s?</p> 
+</div> 
+
+<!-- About Section -->
+<div id="about">
+  <h2>About</h2>
+  <p>In this study, our research team consisted of five to seven Emory University undergraduate students, who had either never or rarely seen the TV show Felicity. Felicity aired on Tuesday, September 29, 1998 on the WB. Study participants were exposed to the original trailers before witnessing each season. After each episode, participants were asked to vote for their favorite character. During season 2, the research team introduced a question for most hated character and an additional question regarding Felicity's hair. During season 3, two new questions were added: honorable mention and craziest moment.</p>
+</div>
+
+<!-- Characters -->
+<div id="characters">
+  <h2>Characters</h2>
+### Favorite
+  <p>Detailed below is an assessment of the thoughts and opinions of those at Felicity Thursdays. At the end of each episode, members were asked to vote for their favorite character.</p>
+
+  <div class="graph-container" style="margin-bottom: 40px;">
+  
+  ```{r message=FALSE, echo=FALSE, warning=FALSE}
+  library(dplyr)
+  library(plotly)
+
+  # Create a new variable - counts number of votes 
+  felicity_count <- felicity %>%
+    count(season, favorite)
+
+  # Define a unique pastel color palette
+  unique_colors <- c('#FAD06E', '#E6A7FE', '#D83367', '#FF99B7', '#D8B9B1', '#B3CDE0', '#E6A8D7', '#F6D7A7')
+
+  # Create Plotly plot
+  fig <- plot_ly()
+
+  # Loop to add a trace for each character, with unique color for each character
+  for (i in seq_along(unique(felicity_count$favorite))) {
+    char <- unique(felicity_count$favorite)[i]
+    df_subset <- felicity_count %>% filter(favorite == char)
+    fig <- fig %>%
+      add_trace(
+        data = df_subset,
+        x = ~season,
+        y = ~n,  
+        type = "bar",
+        name = char,  
+        visible = "legendonly",  # Starts hidden
+        marker = list(color = unique_colors[i])
+      )
+  }
+
+  fig <- fig %>%
+      layout(
+      title = list(
+        text = "Favorite Character by Season", 
+        font = list(size = 15, color = "#6B3F31"),  
+        x = 0.5,  
+        yanchor = "bottom"
+      ),
+      xaxis = list(
+        title = "Season",
+        type = "category",
+        tickfont = list(color = "#6B3F31"),
+        tickangle = 0
+      ),
+      yaxis = list(
+        title = "Number of Appearances",
+        tickfont = list(color = "#6B3F31"), range = c(0, NA)
+        ),
+      plot_bgcolor = "#FFFAF3",
+      paper_bgcolor = "#FFFAF3",
+      font = list(family = "Arial", color = "#6B3F31"),
+      barmode = "group",
+      showlegend = TRUE)
+
+  fig
+  ```
+  </div> 
+
+
+### Hated
+
+  ```{r message=FALSE, echo=FALSE, warning=FALSE}
+
+  hated_count <- felicity %>%
+    count(season, hated)
+
+  fig <- plot_ly()
+
+  # Loop to add a trace for each character, with unique color for each character
+  for (i in seq_along(unique(hated_count$hated))) {
+    char <- unique(hated_count$hated)[i]
+    hated_subset <- hated_count %>% filter(hated == char)  
+    fig <- fig %>%
+      add_trace(
+        data = hated_subset,
+        x = ~season,
+        y = ~n,  
+        type = "bar",
+        name = char,  
+        visible = "legendonly",  
+        marker = list(color = unique_colors[i])
+      )
+  }
+
+  fig <- fig %>%
+      layout(
+      title = list(
+        text = "Most Hated Character by Season", 
+        font = list(size = 15, color = "#6B3F31"),  
+        x = 0.5,  
+        yanchor = "bottom"
+      ),
+      xaxis = list(
+        title = "Season",
+        type = "category",
+        tickfont = list(color = "#6B3F31"),
+        tickangle = 0
+      ),
+      yaxis = list(
+        title = "Number of Appearances",
+        tickfont = list(color = "#6B3F31"), range = c(0, NA)
+        ),
+      plot_bgcolor = "#FFFAF3",
+      paper_bgcolor = "#FFFAF3",
+      font = list(family = "Arial", color = "#6B3F31"),
+      barmode = "group",
+      showlegend = TRUE)
+
+  fig
+  ```
+</div>
+
+<!-- Hair Chronicles Section -->
+<div id="hair">
+  <h2>The Hair Chronicles</h2>
+  <p>Starting Season 2, Felicity made the dramatic decision to cut her hair. Coming off of a crushing breakup with Ben and a missed opportunity to go abroad with Noel, Felicity found herself at a standstill. This hair chop would almost lead to the cancellation of the entire show. To try to recreate and document these viewers emotions from the early 2000s, we had viewers comment on Felicity's hair after every episode, starting in Season 2.</p>
+  
+  <div class="graph-container" style="margin-bottom: 40px;">
+  ```{r message=F, echo=F, warning=F}
+
+hair_count <- felicity %>%
+  count(season, hair)
+
+unique_colors <- c(unique_colors <- c('#FAD06E', '#E6A7FE', '#D83367', '#FF99B7', '#D8B9B1', '#B3CDE0', '#E6A8D7', '#F6D7A7'))
+
+fig <- plot_ly()
+
+# Loop to add a trace for each character, with unique color for each character
+for (i in seq_along(unique(hair_count$hair))) {
+  char <- unique(hair_count$hair)[i]
+  hair_subset <- hair_count %>% filter(hair == char)  
+  fig <- fig %>%
+    add_trace(
+      data = hair_subset,
+      x = ~season,
+      y = ~n, 
+      type = "bar",
+      name = char,  
+      visible = "legendonly",  
+      marker = list(
+        color = unique_colors[i]  
+      )
+    )
+}
+
+fig <- fig %>%
+    layout(
+    title = list(
+      text = "Hair Reviews by Season", 
+      font = list(size = 15, color = "#6B3F31"),
+      x = 0.5,  # Center the title
+      yanchor = "bottom"  
+    ),
+    xaxis = list(
+      title = "Season",
+      type = "category",
+      tickfont = list(color = "#6B3F31"),
+      tickangle = 0  
+    ),
+    yaxis = list(
+      title = "Hair Asssessment",
+      tickfont = list(color = "#6B3F31"), range = c(0, NA)
+      ),
+    plot_bgcolor = "#FFFAF3",
+    paper_bgcolor = "#FFFAF3",
+    font = list(family = "Arial", color = "#6B3F31"),
+    barmode = "group",
+    showlegend = TRUE)
+
+fig
+
+  ```
+</div>
+ <!-- Trivia Section -->
+<div id="trivia">
+  <h2>Trivia</h2>
+
+
+<!-- Question 1 -->
+<p>Question #1: What is Tyra Bank's character's name, the girl who Noel relentlessly stalks at the beginning of Season 3 (after his annulment, of course)?</p>
+
+ <button id="starButton2" onclick="toggleText('hiddenText2')">🌟</button>
+  <p id="hiddenText2" class="hiddenText">Jane Scott! ✨</p>
+ 
+ <!-- Question 2 -->
+<p>Question #3: In season 3, it's revealed Megan had a love affair with a women three years prior. What is her name? Bonus, why is Sean obsessed with her in the episode (spoiler alert: it's not because she made out with Megan)?</p>
+
+<button id="starButton3" onclick="toggleText('hiddenText3')">⭐</button>
+  <p id="hiddenText3" class="hiddenText">Chris! 🌈</p>
+ </div> 
+
+<style>
+  #starButton1, #starButton2, #starButton3 {
+    font-size: 24px; 
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: inline-block; 
+    padding: 10px;
+  }
+
+  .hiddenText {
+    display: none;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+</style>
+
+
+<script>
+  // Toggle Text Visibility
+  function toggleText(textId) {
+    var text = document.getElementById(textId);
+    if (text.style.display === "none" || text.style.display === "") {
+      text.style.display = "block";  // Show text
+    } else {
+      text.style.display = "none";  // Hide text
+    }
+  }
+</script>
+  
