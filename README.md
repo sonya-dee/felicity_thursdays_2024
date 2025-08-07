@@ -10,8 +10,10 @@ Welcome to the official repository for **Felicity Thursdays**, a semester-long m
 
 📁 data/
 └── felicity.xlsx # Raw weekly vote tallies (favorite, least favorite, hair opinions)
+
 📁 assets/
 └── style.css # CSS style sheet 
+
 felicity.Rmd # R Markdown analysis, knit into an HTML with an interactive UI 
 
 ---
@@ -40,7 +42,7 @@ felicity.Rmd # R Markdown analysis, knit into an HTML with an interactive UI
 
 ## Citation
 
-> Felicity Thursdays Research Team (2025). *A Longitudinal Analysis of Viewer Responses to Felicity (1998–2002). Unpublished undergraduate study. GitHub Repository: [https://github.com/you/felicity_thursdays_2024](https://github.com/sonya-dee/felicity_thursdays_2024)
+> Felicity Thursdays Research Team (2025). *A Longitudinal Analysis of Viewer Responses to Felicity (1998–2002). Unpublished undergraduate study. GitHub Repository: [https://github.com/sonya-deefelicity_thursdays_2024](https://github.com/sonya-dee/felicity_thursdays_2024)
 
 ---
 
